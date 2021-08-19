@@ -2,3 +2,4 @@ rootProject.name = "MMApplication"
 include ':app'
 include ':contract'
 include ':networking'
+include ':persistence'
