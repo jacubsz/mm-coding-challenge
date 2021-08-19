@@ -6,7 +6,7 @@ import com.github.jacubsz.mm.networking.api.MMLessonsApi
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
-class AppNetworkingPlugin @Inject constructor(
+internal class AppNetworkingPlugin @Inject constructor(
     private val lessonsApi: MMLessonsApi
 ) : LessonsDataSource {
 

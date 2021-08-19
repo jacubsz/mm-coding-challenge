@@ -1,5 +1,5 @@
 package com.github.jacubsz.mm.networking.api.model
 
-data class LessonsWrapperDTO(
+internal data class LessonsWrapperDTO(
     val lessons: List<LessonDTO>
 )

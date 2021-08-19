@@ -11,6 +11,6 @@ abstract class AppNetworkingPluginModule {
 
     @Singleton
     @Binds
-    abstract fun bindAppNetworkingPlugin(appNetworkingPlugin: AppNetworkingPlugin): LessonsDataSource
+    internal abstract fun bindAppNetworkingPlugin(appNetworkingPlugin: AppNetworkingPlugin): LessonsDataSource
 
 }
