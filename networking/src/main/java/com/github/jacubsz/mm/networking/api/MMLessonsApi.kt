@@ -4,8 +4,7 @@ import com.github.jacubsz.mm.networking.api.model.LessonsWrapperDTO
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 
-
-interface MMLessonsApi {
+internal interface MMLessonsApi {
 
     companion object {
         private const val BASE_PATH = "/lessons"
