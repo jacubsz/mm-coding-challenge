@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MM App</string>
+
+    <string name="menu_action_about">About</string>
+
+    <string name="about_header">Author: Jakub Szostakowski</string>
+    <string name="about_year">2021</string>
+
+</resources>
