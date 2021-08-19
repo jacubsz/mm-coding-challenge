@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
@@ -9,23 +9,24 @@ android {
     buildToolsVersion versions.buildtool
 
     defaultConfig {
-        applicationId "com.github.jacubsz.mm"
         minSdkVersion versions.min_sdk
         targetSdkVersion versions.target_sdk
         versionCode 1
         versionName "1.0"
 
-        buildConfigField("String", "NETWORKING_HOST", "\"https://mimochallenge.azurewebsites.net/api/\"")
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        configurations {
-            androidTestImplementation.setCanBeResolved(true)
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+
+        sourceSets {
+            getByName("androidTest").assets.srcDirs += "$projectDir/schemas"
         }
     }
 
-    buildFeatures {
-        dataBinding = true
-    }
     buildTypes {
         release {
             minifyEnabled false
@@ -39,35 +40,30 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        dataBinding true
-    }
 }
 
 dependencies {
 
-    implementation project(":networking")
-    implementation project(":persistence")
+    api project(':contract')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "androidx.core:core-ktx:$versions.ktx"
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
-    implementation "com.google.android.material:material:$versions.android_material"
 
     implementation "com.google.dagger:dagger-android:$versions.dagger"
     implementation "com.google.dagger:dagger-android-support:$versions.dagger"
     kapt "com.google.dagger:dagger-android-processor:$versions.dagger"
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
 
-    implementation "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
-    implementation "io.reactivex.rxjava3:rxjava:$versions.rxjava"
-    implementation "io.reactivex.rxjava3:rxkotlin:$versions.rxkotlin"
+    // api due to the dagger injection supertype resolving issue
+    api "androidx.room:room-runtime:$versions.room"
+    implementation "androidx.room:room-rxjava3:$versions.room"
+    kapt "androidx.room:room-compiler:$versions.room"
 
     testImplementation "junit:junit:$versions.junit4"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$versions.mockito"
-
-    androidTestImplementation "io.mockk:mockk-android:$versions.mockk_android"
+    androidTestImplementation "androidx.room:room-testing:$versions.room"
     androidTestImplementation "androidx.test.ext:junit:$versions.junit_ext"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
-    androidTestImplementation "androidx.test.uiautomator:uiautomator:$versions.uiautomator"
+
 }
