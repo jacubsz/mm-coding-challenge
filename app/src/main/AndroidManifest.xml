@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.jacubsz.mm">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name="com.github.jacubsz.mm.MMApplication"
         android:allowBackup="true"
@@ -11,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MMApplication">
         <activity
-            android:name="com.github.jacubsz.mm.view.AboutActivity"
+            android:name="com.github.jacubsz.mm.view.LessonsScrollingActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.MMApplication.NoActionBar">
@@ -21,6 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.github.jacubsz.mm.view.AboutActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MMApplication.NoActionBar" />
+
+        <activity
+            android:name="com.github.jacubsz.mm.view.LessonsCompletedActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MMApplication.NoActionBar" />
 
     </application>
 

@@ -23,6 +23,6 @@ abstract class AppViewModel : ViewModel() {
         disposables.clear()
     }
 
-    abstract fun init()
+    open fun init() = Unit
 
 }
