@@ -28,20 +28,11 @@ class LessonsScrollingActivity :
         viewBinding.lessonsViewPager.adapter = lessonsAdapter
         viewBinding.lessonsViewPager.isUserInputEnabled = false
         viewBinding.aboutText.setOnClickListener { startActivity(AboutActivity.newIntent(this)) }
+
         subscribeToLessons()
         subscribeToErrorMessage()
 
-        supportFragmentManager.setFragmentResultListener(
-            LESSON_COMPLETION_FRAGMENT_RESULT,
-            this
-        ) { requestKey, bundle ->
-            if (requestKey == LESSON_COMPLETION_FRAGMENT_RESULT) {
-                bundle.getParcelable<Lesson>(LESSON_COMPLETION_FRAGMENT_RESULT_DATA)
-                    ?.let { completedLesson ->
-                        trySwitchingToNextLessonOrShowCompletionActivity(completedLesson)
-                    }
-            }
-        }
+        listenToLessonsCompletion()
     }
 
     private fun subscribeToLessons() {
@@ -67,6 +58,20 @@ class LessonsScrollingActivity :
             } else {
                 startActivity(LessonsCompletedActivity.newIntent(this))
                 finish()
+            }
+        }
+    }
+
+    private fun listenToLessonsCompletion() {
+        supportFragmentManager.setFragmentResultListener(
+            LESSON_COMPLETION_FRAGMENT_RESULT,
+            this
+        ) { requestKey, bundle ->
+            if (requestKey == LESSON_COMPLETION_FRAGMENT_RESULT) {
+                bundle.getParcelable<Lesson>(LESSON_COMPLETION_FRAGMENT_RESULT_DATA)
+                    ?.let { completedLesson ->
+                        trySwitchingToNextLessonOrShowCompletionActivity(completedLesson)
+                    }
             }
         }
     }

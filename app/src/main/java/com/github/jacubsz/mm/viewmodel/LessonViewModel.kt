@@ -26,6 +26,44 @@ class LessonViewModel @Inject constructor(
 
     fun setLesson(lesson: Lesson) {
         lessonId = lesson.id
+        val lessonItems = divideLessonsToInputsAndTexts(lesson)
+        expectedSuccessfulLessonItemsCount = lessonItems.count { it is LessonItemInput }
+        if (expectedSuccessfulLessonItemsCount == 0) {
+            nextButtonEnabled.set(true)
+        }
+        lessonItemsSubject.onNext(lessonItems)
+        lessonStartTime = Date()
+    }
+
+    fun setSuccess(lessonItem: LessonItemInput) {
+        if (!successfulLessonItems.contains(lessonItem)) {
+            successfulLessonItems.add(lessonItem)
+        }
+        if (expectedSuccessfulLessonItemsCount > 0 && expectedSuccessfulLessonItemsCount == successfulLessonItems.size) {
+            nextButtonEnabled.set(true)
+        }
+    }
+
+    fun setFailure(lessonItem: LessonItemInput) {
+        if (successfulLessonItems.contains(lessonItem)) {
+            successfulLessonItems.remove(lessonItem)
+        }
+        nextButtonEnabled.set(false)
+    }
+
+    fun saveLessonCompletion() {
+        lessonId?.let { lessonId ->
+            lessonCompletionEventsDataSource.saveLessonCompletionEvent(
+                LessonCompletionEvent(
+                    lessonId,
+                    lessonStartTime ?: Date(),
+                    Date()
+                )
+            )
+        }
+    }
+
+    private fun divideLessonsToInputsAndTexts(lesson: Lesson): List<LessonItemType> {
         val lessonItems = mutableListOf<LessonItemType>()
         lesson.input?.let { lessonInput ->
             var contentIndexCounter = 0
@@ -103,39 +141,6 @@ class LessonViewModel @Inject constructor(
         } ?: lesson.content.forEach { lessonContent ->
             lessonItems.add(LessonItemText(lessonContent.text, lessonContent.color))
         }
-        expectedSuccessfulLessonItemsCount = lessonItems.count { it is LessonItemInput }
-        if (expectedSuccessfulLessonItemsCount == 0) {
-            nextButtonEnabled.set(true)
-        }
-        lessonItemsSubject.onNext(lessonItems)
-        lessonStartTime = Date()
-    }
-
-    fun setSuccess(lessonItem: LessonItemInput) {
-        if (!successfulLessonItems.contains(lessonItem)) {
-            successfulLessonItems.add(lessonItem)
-        }
-        if (expectedSuccessfulLessonItemsCount > 0 && expectedSuccessfulLessonItemsCount == successfulLessonItems.size) {
-            nextButtonEnabled.set(true)
-        }
-    }
-
-    fun setFailure(lessonItem: LessonItemInput) {
-        if (successfulLessonItems.contains(lessonItem)) {
-            successfulLessonItems.remove(lessonItem)
-        }
-        nextButtonEnabled.set(false)
-    }
-
-    fun saveLessonCompletion() {
-        lessonId?.let { lessonId ->
-            lessonCompletionEventsDataSource.saveLessonCompletionEvent(
-                LessonCompletionEvent(
-                    lessonId,
-                    lessonStartTime ?: Date(),
-                    Date()
-                )
-            )
-        }
+        return lessonItems
     }
 }

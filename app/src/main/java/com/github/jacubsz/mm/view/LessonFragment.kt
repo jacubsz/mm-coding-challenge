@@ -16,6 +16,7 @@ import com.github.jacubsz.mm.view.LessonsScrollingActivity.Companion.LESSON_COMP
 import com.github.jacubsz.mm.view.LessonsScrollingActivity.Companion.LESSON_COMPLETION_FRAGMENT_RESULT_DATA
 import com.github.jacubsz.mm.viewmodel.LessonItemInput
 import com.github.jacubsz.mm.viewmodel.LessonItemText
+import com.github.jacubsz.mm.viewmodel.LessonItemType
 import com.github.jacubsz.mm.viewmodel.LessonViewModel
 import io.reactivex.rxjava3.kotlin.addTo
 
@@ -43,39 +44,57 @@ class LessonFragment : AppFragment<FragmentLessonBinding, LessonViewModel>(Lesso
     override fun initView(savedInstanceState: Bundle?) {
         getLesson(arguments)?.let { lesson ->
             viewModel.setLesson(lesson)
-            viewBinding.nextButton.setOnClickListener {
-                viewModel.saveLessonCompletion()
-                parentFragmentManager.setFragmentResult(LESSON_COMPLETION_FRAGMENT_RESULT, bundleOf(LESSON_COMPLETION_FRAGMENT_RESULT_DATA to lesson))
-            }
+            notifyAboutLessonCompletionOnButtonClick(lesson)
         }
 
+        subscribeToLessonItems()
+    }
+
+    private fun subscribeToLessonItems() {
         viewModel.lessonItems
             .dispatch(Thread.IO, Thread.MAIN)
             .map { lessonItems ->
-                lessonItems.map { lessonItem ->
-                    when (lessonItem) {
-                        is LessonItemInput -> EditText(requireContext()).also {
-                            it.setTextColor(Color.parseColor(lessonItem.color))
-                            it.addTextChangedListener { inputText ->
-                                if (inputText.toString() == lessonItem.text) {
-                                    viewModel.setSuccess(lessonItem)
-                                } else {
-                                    viewModel.setFailure(lessonItem)
-                                }
-                            }
-                        }
-                        is LessonItemText -> TextView(requireContext()).also {
-                            it.setTextColor(Color.parseColor(lessonItem.color))
-                            it.text = lessonItem.text
+                mapLessonItemsToViews(lessonItems)
+            }
+            .subscribe { views ->
+                displayLessonItems(views)
+            }
+            .addTo(disposables)
+    }
+
+    private fun mapLessonItemsToViews(lessonItems: List<LessonItemType>) =
+        lessonItems.map { lessonItem ->
+            when (lessonItem) {
+                is LessonItemInput -> EditText(requireContext()).also {
+                    it.setTextColor(Color.parseColor(lessonItem.color))
+                    it.addTextChangedListener { inputText ->
+                        if (inputText.toString() == lessonItem.text) {
+                            viewModel.setSuccess(lessonItem)
+                        } else {
+                            viewModel.setFailure(lessonItem)
                         }
                     }
                 }
-            }
-            .subscribe { views ->
-                views.forEach {
-                    viewBinding.itemsLinearLayout.addView(it)
+                is LessonItemText -> TextView(requireContext()).also {
+                    it.setTextColor(Color.parseColor(lessonItem.color))
+                    it.text = lessonItem.text
                 }
             }
-            .addTo(disposables)
+        }
+
+    private fun displayLessonItems(views: List<TextView>) {
+        views.forEach {
+            viewBinding.itemsLinearLayout.addView(it)
+        }
+    }
+
+    private fun notifyAboutLessonCompletionOnButtonClick(lesson: Lesson) {
+        viewBinding.nextButton.setOnClickListener {
+            viewModel.saveLessonCompletion()
+            parentFragmentManager.setFragmentResult(
+                LESSON_COMPLETION_FRAGMENT_RESULT,
+                bundleOf(LESSON_COMPLETION_FRAGMENT_RESULT_DATA to lesson)
+            )
+        }
     }
 }
