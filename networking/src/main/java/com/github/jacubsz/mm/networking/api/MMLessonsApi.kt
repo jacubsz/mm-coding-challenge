@@ -7,7 +7,7 @@ import retrofit2.http.GET
 internal interface MMLessonsApi {
 
     companion object {
-        private const val BASE_PATH = "/lessons"
+        private const val BASE_PATH = "lessons"
     }
 
     @GET("$BASE_PATH/")

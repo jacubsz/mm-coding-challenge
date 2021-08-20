@@ -9,3 +9,9 @@ internal fun LessonCompletionEvent.toDatabaseEntity() = LessonCompletionEventEnt
     lessonStartTime,
     lessonCompletionTime ?: Date()
 )
+
+internal fun LessonCompletionEventEntity.toContractModel() = LessonCompletionEvent(
+    lessonId,
+    lessonStarted,
+    lessonCompleted
+)

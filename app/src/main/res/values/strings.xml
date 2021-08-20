@@ -5,5 +5,8 @@
 
     <string name="about_header">Author: Jakub Szostakowski</string>
     <string name="about_year">2021</string>
+    <string name="lessons_loading_error">Lessons loading error, please check the Internet connection</string>
+    <string name="next_lesson_button_label">Next</string>
+    <string name="lessons_completed_message">Done</string>
 
 </resources>

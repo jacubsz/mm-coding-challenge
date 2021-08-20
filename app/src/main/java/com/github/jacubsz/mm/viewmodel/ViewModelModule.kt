@@ -18,4 +18,14 @@ abstract class ViewModelModule {
     @ViewModelKey(EmptyViewModel::class)
     abstract fun bindEmptyViewModel(viewModel: EmptyViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(LessonsScrollingViewModel::class)
+    abstract fun bindLessonsScrollingViewModel(viewModel: LessonsScrollingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LessonViewModel::class)
+    abstract fun bindLessonViewModel(viewModel: LessonViewModel): ViewModel
+
 }

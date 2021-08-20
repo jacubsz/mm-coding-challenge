@@ -5,12 +5,17 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 enum class Thread(val scheduler: Scheduler) {
     IO(Schedulers.io()),
     MAIN(AndroidSchedulers.mainThread())
 }
+
+fun <T> Single<T>.dispatch(subscribeOn: Thread, observeOn: Thread): Single<T> =
+    this.subscribeOn(subscribeOn.scheduler)
+        .observeOn(observeOn.scheduler)
 
 fun <T> Observable<T>.dispatch(subscribeOn: Thread, observeOn: Thread): Observable<T> =
     this.subscribeOn(subscribeOn.scheduler)
